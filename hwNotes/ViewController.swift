@@ -59,6 +59,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func setupTableView() {
         tableView = UITableView(frame: view.bounds, style: .plain)
         tableView.backgroundColor = .white
+        tableView.separatorStyle = .singleLine
+        tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: identifire)
         //        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -75,7 +77,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         ])
     }
     
-    //MARK: UITableView DataSource methods
+//MARK: UITableView DataSource methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return array.count
     }
@@ -87,29 +89,42 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    //MARK: UITableView Delegate methods
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50.0
     }
     
+//MARK: UITableView Delegate methods
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let number = indexPath.row
         array.append(String(number))
         print(number, array.count)
-        
     }
     
     //cell delete editing
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
-    
-    //cell delete
+
+    //cell deleteing
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             array.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .left)
         }
     }
+    
+    //cell move
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        true
+    }
+    
+    //cell moveing
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        let item = array[sourceIndexPath.row]
+        array.remove(at: sourceIndexPath.row)
+        array.insert(item, at: destinationIndexPath.row)
+    }
+
 }
 
