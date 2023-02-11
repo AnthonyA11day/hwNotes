@@ -10,7 +10,11 @@ import UIKit
 class ViewController: UIViewController {
     
     var tableView = UITableView()
-    let identifire = "cell"
+//    let tableView: UITableView.init()
+    var contents = Source.makeContent()
+    let identifire = "CustomCell"
+//    let identifire = "cell"
+//
     var array = ["1-","2-","3-","4-","5-","6-","7-","8-","9-"]
 
     override func viewDidLoad() {
@@ -61,13 +65,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.backgroundColor = .white
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: identifire)
-        //        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        tableView.register(UITableViewCell.self, forCellReuseIdentifier: identifire)
+        tableView.register(CustomCell.self, forCellReuseIdentifier: identifire)
+//        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(tableView)
         
         tableView.delegate = self
         tableView.dataSource = self
-        view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
@@ -79,18 +85,25 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
 //MARK: UITableView DataSource methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return array.count
+//        return array.count
+        return contents.count
+
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: identifire, for: indexPath)
-        cell.textLabel?.text = "\(indexPath.row) test text "
-        cell.textLabel?.text = array[indexPath.row]
+//        let cell = tableView.dequeueReusableCell(withIdentifier: identifire, for: indexPath)
+//        cell.textLabel?.text = "\(indexPath.row) test text "
+//        cell.textLabel?.text = array[indexPath.row]
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifire, for: indexPath) as? CustomCell
+            else { fatalError() }
+        cell.configere(content: contents[indexPath.row])
+
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50.0
+        return 60.0
     }
     
 //MARK: UITableView Delegate methods
