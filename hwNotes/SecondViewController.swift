@@ -6,8 +6,15 @@
 //
 
 import UIKit
+import MapKit
+
 
 class SecondViewController: ViewController {
+    
+    private let map: MKMapView = {
+       let map = MKMapView()
+       return map
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -15,15 +22,23 @@ class SecondViewController: ViewController {
         setupSubview()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        navigation()
+    }
+    
     override func setupSubview() {
         title = "Add notes"
         view.backgroundColor = .systemGray4
+        view.addSubview(map)
         
         addBarButtonsSecond()
     }
 }
 
-extension SecondViewController{
+//MARK: bar button
+extension SecondViewController {
     func addBarButtonsSecond() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
                                                             target: self,
@@ -33,4 +48,13 @@ extension SecondViewController{
     override func actionRightBarButton() {
         print("override righr button test")
     }
+}
+
+//MARK: navigation map
+extension SecondViewController {
+    
+    func navigation() {
+        
+        map.frame = view.bounds
+    }    
 }
