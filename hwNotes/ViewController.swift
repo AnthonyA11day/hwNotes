@@ -11,7 +11,7 @@ class ViewController: UIViewController {
     
     var tableView = UITableView()
 //    let tableView: UITableView.init()
-    var contents = Source.makeContent()
+    var content = Source.makeContent()
     let identifire = "CustomCell"
 //    let identifire = "cell"
 //
@@ -35,25 +35,23 @@ class ViewController: UIViewController {
 //MARK: - bar buttons
 extension ViewController {
     func addBarButtonsFirstVC() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                             target: self,
                                                             action: #selector(actionLeftBarButton))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
                                                             target: self,
                                                             action: #selector(actionRightBarButton))
-
     }
-    
     
     @objc func actionLeftBarButton() {
-        print("action left addBarButtonsFirstVC")
-        tableView.isEditing = !tableView.isEditing
-        
-    }
-    @objc func actionRightBarButton() {
         print("action right addBarButtonsFirstVC")
         let secondViewController = SecondViewController()
         navigationController?.pushViewController(secondViewController, animated: true)
+    }
+    
+    @objc func actionRightBarButton() {
+        print("action left addBarButtonsFirstVC")
+        tableView.isEditing = !tableView.isEditing
     }
 }
 
@@ -65,8 +63,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.backgroundColor = .white
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
-//        tableView.register(UITableViewCell.self, forCellReuseIdentifier: identifire)
-        tableView.register(CustomCell.self, forCellReuseIdentifier: identifire)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: identifire)
+//        tableView.register(CustomCell.self, forCellReuseIdentifier: identifire)
 //        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -85,19 +83,25 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
 //MARK: UITableView DataSource methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return array.count
-        return contents.count
-
+        return content.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
+        
+        cell.textLabel?.text = "\(indexPath.row) textLabel - дата, время, страна, город"
+        cell.textLabel?.textColor = .red
+
+        cell.detailTextLabel?.text = "detail text - троки из заметки"
+        cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 14)
+        
 //        let cell = tableView.dequeueReusableCell(withIdentifier: identifire, for: indexPath)
 //        cell.textLabel?.text = "\(indexPath.row) test text "
 //        cell.textLabel?.text = array[indexPath.row]
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifire, for: indexPath) as? CustomCell
-            else { fatalError() }
-        cell.configere(content: contents[indexPath.row])
+//        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifire, for: indexPath) as? CustomCell
+//            else { fatalError() }
+//        cell.configere(content: content[indexPath.row])
 
         return cell
     }
@@ -106,6 +110,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return 60.0
     }
     
+
 //MARK: UITableView Delegate methods
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let number = indexPath.row
@@ -113,10 +118,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         print(number, array.count)
     }
     
-    //cell delete editing
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
-    }
+//    //cell delete editing
+//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+//        return .delete
+//    }
 
     //cell deleteing
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -138,6 +143,4 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         array.remove(at: sourceIndexPath.row)
         array.insert(item, at: destinationIndexPath.row)
     }
-
 }
-

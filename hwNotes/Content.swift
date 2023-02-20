@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 struct Contents {
     let dataAndTime: String
