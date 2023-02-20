@@ -10,9 +10,13 @@ import MapKit
 import CoreLocation
 
 final class SecondViewController: UIViewController {
-     
+    
+    // for location
     var lat: Double = 40.43065
     var lon: Double = -79.92317
+    
+    //for dta pass
+    var passText: String = ""
     
     private var mapButton = UIButton()
     
@@ -53,6 +57,7 @@ final class SecondViewController: UIViewController {
         textView.backgroundColor = .white
         textView.layer.cornerRadius = 3
         textView.textAlignment = .left
+
 //        textField.becomeFirstResponder()
 //        textField.isFirstResponder
 
@@ -67,7 +72,11 @@ final class SecondViewController: UIViewController {
         dateLabel.text = formatter.string(from: sender.date)
         
         //передача локации
-        locationLabel.text = "Страна, Город"
+//        locationLabel.text = "Страна, Город"
+        
+        // передача данных
+        noteTextView.text = passText
+        locationLabel.text = passText
     }
     
     func setupSubview() {
@@ -80,6 +89,8 @@ final class SecondViewController: UIViewController {
 //            $0.translatesAutoresizingMaskIntoConstraints = false
             $0.center.x = view.center.x
             view.addSubview( $0 )
+            
+
         }
     }
     
@@ -95,7 +106,20 @@ final class SecondViewController: UIViewController {
     @objc func actionLeftBarButton() {
         print("action right addBarButtonsFirstVC")
         navigationController?.popViewController(animated: true)
-        noteTextView.text == "" ? print("not saved") : print("saved")
+        
+        if noteTextView.text == ""{
+            print("not saved, nat pass")
+        } else {
+            print("saved and pass")
+            
+            // data pass
+//            let reciverVC = ViewController()
+//            secondtVC.tuple = ( String(dateLabel.text ?? ""), String(noteTextView.text) )
+//            secondtVC.passText = noteTextView.text
+//            reciverVC.passText = "passsss texxxxxtttt "
+            
+        }
+        
     }
     
     @objc func actionRightBarButton() {
