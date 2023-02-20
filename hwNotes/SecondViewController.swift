@@ -32,16 +32,17 @@ final class SecondViewController: UIViewController {
         return label
     }()
     
-    var noteTextfield: UITextField = {
-        let textField = UITextField(frame: CGRect(x: 0, y: 250, width: 300, height: 16 * 10))
-        textField.placeholder = " enter text hear"
-        textField.backgroundColor = .white
-        textField.layer.cornerRadius = 3
-        textField.textAlignment = .left
+    var noteTextView: UITextView = {
+        let textView = UITextView(frame: CGRect(x: 0, y: 250, width: 300, height: 16 * 10))
+//        textField.placeholder = " enter text hear"
+        textView.font = .systemFont(ofSize: 16)
+        textView.backgroundColor = .white
+        textView.layer.cornerRadius = 3
+        textView.textAlignment = .left
 //        textField.becomeFirstResponder()
 //        textField.isFirstResponder
 
-        return textField
+        return textView
     }()
     
     var verticalStack: UIStackView = {
@@ -69,9 +70,9 @@ final class SecondViewController: UIViewController {
         
         view.addSubview(dateLabel)
         view.addSubview(locationLabel)
-        view.addSubview(noteTextfield)
+        view.addSubview(noteTextView)
 
-        [dateLabel, locationLabel, noteTextfield].forEach {
+        [dateLabel, locationLabel, noteTextView].forEach {
 //            $0.translatesAutoresizingMaskIntoConstraints = false
             $0.center.x = view.center.x
             view.addSubview( $0 )
