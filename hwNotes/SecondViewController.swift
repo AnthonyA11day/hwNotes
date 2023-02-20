@@ -16,16 +16,30 @@ final class SecondViewController: UIViewController {
     
     private var mapButton = UIButton()
     
+    let sender: UIDatePicker = {
+        let sender = UIDatePicker()
+        sender.date = .now
+        return sender
+    }()
+    
+    let formatter: DateFormatter = {
+        let formatter = DateFormatter()
+//        formatter.locale = .current
+//        formatter.timeZone = .autoupdatingCurrent
+        formatter.dateFormat = "d MMM yyyy, h:mm:ss a"
+        return formatter
+    }()
+    
     var dateLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: 0, y: 150, width: 300, height: 50))
-        label.text = "Date, Time"
+        let label = UILabel(frame: CGRect(x: 0, y: 200, width: 300, height: 50))
+        label.text = "Date and Time"
         label.backgroundColor = .systemPink
         label.textAlignment = .center
         return label
     }()
     
     var locationLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: 0, y: 200, width: 300, height: 50))
+        let label = UILabel(frame: CGRect(x: 0, y: 250, width: 300, height: 50))
         label.text = "Country, City"
         label.backgroundColor = .orange
         label.textAlignment = .center
@@ -33,7 +47,7 @@ final class SecondViewController: UIViewController {
     }()
     
     var noteTextView: UITextView = {
-        let textView = UITextView(frame: CGRect(x: 0, y: 250, width: 300, height: 16 * 10))
+        let textView = UITextView(frame: CGRect(x: 0, y: 300, width: 300, height: 16 * 10))
 //        textField.placeholder = " enter text hear"
         textView.font = .systemFont(ofSize: 16)
         textView.backgroundColor = .white
@@ -45,52 +59,29 @@ final class SecondViewController: UIViewController {
         return textView
     }()
     
-    var verticalStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.alignment = .firstBaseline
-        stack.isBaselineRelativeArrangement = true
-        stack.distribution = .fillEqually
-        stack.spacing = 16
-        return stack
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubview()
+        
+        //передача времени и даты
+        dateLabel.text = formatter.string(from: sender.date)
+        
+        //передача локации
+        locationLabel.text = "Страна, Город"
     }
     
     func setupSubview() {
         title = "Add New Note"
         view.backgroundColor = .systemGray4
-        
-//        createButtons()
         addBarButtonsSecondVC()
         lacation()
-        
-        view.addSubview(dateLabel)
-        view.addSubview(locationLabel)
-        view.addSubview(noteTextView)
 
         [dateLabel, locationLabel, noteTextView].forEach {
 //            $0.translatesAutoresizingMaskIntoConstraints = false
             $0.center.x = view.center.x
             view.addSubview( $0 )
         }
-        
-//        verticalStack.translatesAutoresizingMaskIntoConstraints = false
-//        verticalStack.addArrangedSubview(dateLabel)
-        
-//        verticalStack.addViews([dateLabel, locationLabel, noteTextfield])
-//        view.addSubview(verticalStack)
-        
-//        NSLayoutConstraint.activate([
-//            verticalStack.widthAnchor.constraint(equalToConstant: 300),
-//            verticalStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            verticalStack.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-//        ])
     }
-    
     
     func addBarButtonsSecondVC() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
@@ -104,6 +95,7 @@ final class SecondViewController: UIViewController {
     @objc func actionLeftBarButton() {
         print("action right addBarButtonsFirstVC")
         navigationController?.popViewController(animated: true)
+        noteTextView.text == "" ? print("not saved") : print("saved")
     }
     
     @objc func actionRightBarButton() {
@@ -111,31 +103,12 @@ final class SecondViewController: UIViewController {
         navigationController?.pushViewController(MapViewController(), animated: true)
     }
     
-//MARK: add buttons
-    func createButtons() {
-        mapButton = UIButton(frame: CGRect(x: 0, y: 0, width: 200, height: 16 * 2))
-        mapButton.backgroundColor = .orange
-        mapButton.setTitle("Map", for: .normal)
-        mapButton.setTitleColor(.white, for: .normal)
-        mapButton.setTitleColor(.gray, for: .highlighted)
-        mapButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(mapButton)
-        
-//        NSLayoutConstraint.activate([
-//            mapButton.topAnchor.constraint(equalTo: view.centerYAnchor, constant: 0),
-//            mapButton.leadingAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
-//            mapButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0),
-//            mapButton.heightAnchor.constraint(equalToConstant: 100)
-//        ])
-    }
-    
 }
 
+extension SecondViewController {
+    
 
-
-
-
-
+}
 
 
 extension SecondViewController {
