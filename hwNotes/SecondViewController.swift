@@ -16,7 +16,8 @@ final class SecondViewController: UIViewController {
     var lon: Double = -79.92317
     
     //for dta pass
-    var passText: String = ""
+    var closure: ( (String) -> () )?
+    var passText = ""
     
     private var mapButton = UIButton()
     
@@ -52,15 +53,10 @@ final class SecondViewController: UIViewController {
     
     var noteTextView: UITextView = {
         let textView = UITextView(frame: CGRect(x: 0, y: 300, width: 300, height: 16 * 10))
-//        textField.placeholder = " enter text hear"
         textView.font = .systemFont(ofSize: 16)
         textView.backgroundColor = .white
         textView.layer.cornerRadius = 3
         textView.textAlignment = .left
-
-//        textField.becomeFirstResponder()
-//        textField.isFirstResponder
-
         return textView
     }()
     
@@ -68,15 +64,14 @@ final class SecondViewController: UIViewController {
         super.viewDidLoad()
         setupSubview()
         
-        //передача времени и даты
+        // передача времени и даты
         dateLabel.text = formatter.string(from: sender.date)
         
-        //передача локации
-//        locationLabel.text = "Страна, Город"
+        // передача локации
+        locationLabel.text = "Страна, Город"
         
-        // передача данных
+        // передача данных от VC1 в VC2
         noteTextView.text = passText
-        locationLabel.text = passText
     }
     
     func setupSubview() {
@@ -89,8 +84,6 @@ final class SecondViewController: UIViewController {
 //            $0.translatesAutoresizingMaskIntoConstraints = false
             $0.center.x = view.center.x
             view.addSubview( $0 )
-            
-
         }
     }
     
@@ -112,27 +105,17 @@ final class SecondViewController: UIViewController {
         } else {
             print("saved and pass")
             
-            // data pass
-//            let reciverVC = ViewController()
-//            secondtVC.tuple = ( String(dateLabel.text ?? ""), String(noteTextView.text) )
-//            secondtVC.passText = noteTextView.text
-//            reciverVC.passText = "passsss texxxxxtttt "
-            
+            // data pass from VC2 to VC1
+            closure?(noteTextView.text)
         }
-        
     }
     
     @objc func actionRightBarButton() {
         print("action left addBarButtonsFirstVC")
         navigationController?.pushViewController(MapViewController(), animated: true)
     }
-    
 }
 
-extension SecondViewController {
-    
-
-}
 
 
 extension SecondViewController {
@@ -164,3 +147,4 @@ extension UIStackView {
         }
     }
 }
+ 

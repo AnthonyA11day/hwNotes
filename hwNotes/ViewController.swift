@@ -14,38 +14,26 @@ class ViewController: UIViewController {
     var tuple: (String,String)? = nil
     
     var tableView = UITableView()
-    
-
-    
-    
-    var array = [("data+локация А","заметка 1"), ("data+локация Б","заметка 2"), ("data+локация С","заметка 3")]
-    var selectArray: [Int] = []
+    var notesArray = [("data+локация А","заметка 1"), ("data+локация Б","заметка 2"), ("data+локация С","заметка 3"),
+                      ("data+локация D","заметка 3"), ("data+локация E","заметка 4"), ("data+локация F","заметка 5")]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupSubview()
     }
     
     func setupSubview() {
         title = "Notes"
         view.backgroundColor = .systemGray4
-        
         addBarButtonsFirstVC()
         setupTableView()
-        
+        addNewCell()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    func addNewCell() {
         
-//        closure1?(passText)
-        print("View Did Apper - done")
     }
-        
 }
-
-
 
 //MARK: - bar buttons
 extension ViewController {
@@ -64,31 +52,42 @@ extension ViewController {
         navigationController?.pushViewController(secondViewController, animated: true)
         
         // передача от VC1 к VC2
-        secondViewController.passText = "test pass text from vc1"
+        secondViewController.passText = "pass text from vc1 to vc2"
+        
+        // передача от VC2 к VC1
+        secondViewController.closure = { [weak self] text in
+            self?.title = text
+            
+//            tableView.delegate.cellForRow(at: IndexPath)
+            
+//            tableView.reloadData()
+        }
     }
     
     @objc func actionRightBarButton() {
-        print("action right addBarButtonsFirstVC")
-        tableView.isEditing = !tableView.isEditing
 //        tableView.allowsMultipleSelectionDuringEditing = true
-//        print(tableView.indexPathForSelectedRow)
+        guard !notesArray.isEmpty else { return }
         
         if tableView.isEditing {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(self.actionRightBarButton))
-            navigationItem.rightBarButtonItem?.tintColor = .systemPink
-        
-        } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.edit, target: self, action: #selector(self.actionRightBarButton))
-            navigationItem.rightBarButtonItem?.tintColor = .systemBlue
-            
-            //mass dell cells fron ARRAY and VIEW
-//            for item in selectArray {
-//                print(item)
-//                array.remove(at: item)
-//                tableView.deleteRows(at: [indexPath], with: .middle)
-//                }
+            if let selected = tableView.indexPathsForSelectedRows {
+                print("selecled counts -", selected.count, "selecled -", selected)
+                let items = selected.map{$0[1]}.sorted{$0 > $1}
+                for item in items {
+                    notesArray.remove(at: item)
+                    tableView.reloadData()
+                }
             }
-//            print("remove items", selectArray, "from array ", array)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
+                                                                target: self,
+                                                                action: #selector(self.actionRightBarButton))
+            tableView.isEditing = false
+        } else {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash,
+                                                                target: self,
+                                                                action: #selector(self.actionRightBarButton))
+            navigationItem.rightBarButtonItem?.tintColor = .systemPink
+            tableView.isEditing = true
+            }
         }
 }
 
@@ -122,17 +121,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
 //MARK: UITableView DataSource methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return content.count
-        return array.count
-
+        return notesArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
-        cell.textLabel?.text = array[indexPath.row].0
+        cell.textLabel?.text = notesArray[indexPath.row].0
         cell.textLabel?.textColor = .red
-        cell.detailTextLabel?.text = array[indexPath.row].1
+        cell.detailTextLabel?.text = notesArray[indexPath.row].1
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 14)
         
 //        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifire, for: indexPath) as? CustomCell
@@ -146,58 +142,41 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return 60.0
     }
     
-
-//MARK: UITableView Delegate methods
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        // array of selected cells
-        if tableView.isEditing {
-            selectArray.append(indexPath.row)
-            print("select ", indexPath.row, "selectArray - ", selectArray)
-
-        }
+    //MARK: UITableView Delegate methods
+    //    cell  editing
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
     }
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if tableView.isEditing {
-//            selectArray.remove(at: indexPath.row - 1)
-            print("deselect ", indexPath.row)
+    //    cell deleteing one by one
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            notesArray.remove(at: indexPath.row)
+            tableView.reloadData()
         }
     }
 }
     
-    //cell insetr editing
-//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-//        return .insert
-//    }
 
     //cell insert
 //    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 //        if editingStyle == .insert {
 //            let tuple = ("add tuple", "text")
-//            array.append(tuple)
+//            notesArray.append(tuple)
 //            tableView.insertRows(at: [indexPath], with: .right)
 //        }
 //    }
     
-    //cell deleteing
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            array.remove(at: indexPath.row)
-//            tableView.deleteRows(at: [indexPath], with: .left)
-//        }
+//    //cell move
+//    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+//        true
 //    }
-    
-    //cell move
-    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        true
-    }
-    
-    //cell moveing
-    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
-//        let item = array[sourceIndexPath.row]
-//        array.remove(at: sourceIndexPath.row)
-//        array.insert(item, at: destinationIndexPath.row)
+//
+//    //cell moveing
+//    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+//
+//        let item = notesArray[sourceIndexPath.row]
+//        notesArray.remove(at: sourceIndexPath.row)
+//        notesArray.insert(item, at: destinationIndexPath.row)
 //    }
-}
+//}
