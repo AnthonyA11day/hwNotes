@@ -12,10 +12,11 @@ class ViewController: UIViewController {
     // для передачи через closure
     var closure1: ( (String) -> () )?
     var tuple: (String,String)? = nil
+    var celectedOneCell: Int?
     
     var tableView = UITableView()
     var notesArray = [("data+локация А","заметка 1"), ("data+локация Б","заметка 2"), ("data+локация С","заметка 3"),
-                      ("data+локация D","заметка 3"), ("data+локация E","заметка 4"), ("data+локация F","заметка 5")]
+                      ("data+локация D","заметка 4"), ("data+локация E","заметка 5"), ("data+локация F","заметка 6")]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,21 +48,23 @@ extension ViewController {
     }
     
     @objc func actionLeftBarButton() {
-        print("action left addBarButtonsFirstVC")
+//        print("action left addBarButtonsFirstVC")
         let secondViewController = SecondViewController()
         navigationController?.pushViewController(secondViewController, animated: true)
         
-        // передача от VC1 к VC2
-        secondViewController.passText = "pass text from vc1 to vc2"
-        
-        // передача от VC2 к VC1
+        // pass detailText from cell VC1 to textView VC2
+        if let item = self.celectedOneCell {
+            secondViewController.passText = notesArray[item].1
+        }
+
+        // pass from VC2 to VC1
         secondViewController.closure = { [weak self] text in
             self?.title = text
             
 //            tableView.delegate.cellForRow(at: IndexPath)
-            
 //            tableView.reloadData()
         }
+
     }
     
     @objc func actionRightBarButton() {
@@ -143,20 +146,27 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     //MARK: UITableView Delegate methods
-    //    cell  editing
+    // cell  editing
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
     
-    //    cell deleteing one by one
+    // cell deleteing one by one
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             notesArray.remove(at: indexPath.row)
             tableView.reloadData()
         }
     }
-}
     
+    // cell mono selecting
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        celectedOneCell = Int(indexPath.row)
+        print(indexPath.row)
+    }
+
+}
+
 
     //cell insert
 //    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
