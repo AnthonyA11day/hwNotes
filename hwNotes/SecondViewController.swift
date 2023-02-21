@@ -12,14 +12,13 @@ import CoreLocation
 final class SecondViewController: UIViewController {
     
     // for location
+    let locationManager = CLLocationManager()
     var lat: Double = 40.43065
     var lon: Double = -79.92317
     
     //for dta pass
     var closure: ( (String) -> () )?
     var passText = ""
-    
-    private var mapButton = UIButton()
     
     let sender: UIDatePicker = {
         let sender = UIDatePicker()
@@ -63,28 +62,29 @@ final class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubview()
-        
-        // передача времени и даты
-        dateLabel.text = formatter.string(from: sender.date)
-        
-        // передача локации
-        locationLabel.text = "Страна, Город"
-        
-        // передача данных от VC1 в VC2
-        noteTextView.text = passText
+        update()
     }
     
     func setupSubview() {
         title = "Add New Note"
         view.backgroundColor = .systemGray4
         addBarButtonsSecondVC()
-        lacation()
-
+        
         [dateLabel, locationLabel, noteTextView].forEach {
-//            $0.translatesAutoresizingMaskIntoConstraints = false
             $0.center.x = view.center.x
             view.addSubview( $0 )
         }
+    }
+    
+    func update() {
+        // date and time
+        dateLabel.text = formatter.string(from: sender.date)
+        
+        // location func
+        startLocationManager()
+        
+        // pass data from VC1 to VC2
+        noteTextView.text = passText
     }
     
     func addBarButtonsSecondVC() {
@@ -100,51 +100,53 @@ final class SecondViewController: UIViewController {
         print("action right addBarButtonsFirstVC")
         navigationController?.popViewController(animated: true)
         
-        if noteTextView.text == ""{
-            print("not saved, nat pass")
+        if noteTextView.text == "" {
+            print("not saved, not pass")
         } else {
             print("saved and pass")
             
-            // data pass from VC2 to VC1
+            // pass data from VC2 to VC1
             closure?(noteTextView.text)
         }
     }
     
     @objc func actionRightBarButton() {
         print("action left addBarButtonsFirstVC")
-        navigationController?.pushViewController(MapViewController(), animated: true)
+//        navigationController?.pushViewController(MapViewController(), animated: true)
     }
 }
-
 
 
 extension SecondViewController {
-
-//    func lacation() -> (country: String, city: String) {
-    func lacation() {
-
-        let geoCoder = CLGeocoder()
-        let location = CLLocation(latitude: lat, longitude: lon)
-        geoCoder.reverseGeocodeLocation(location, completionHandler: { placemarks, error -> Void in
-            guard let placemark = placemarks?.first else { return }
-//            if let subThoughtfare = placemark.subThoroughfare { print(subThoughtfare) }
-//            if let thoroughfare = placemark.thoroughfare { print(thoroughfare) }
-            if let city = placemark.locality { print(city) }
-            if let country = placemark.isoCountryCode { print(country) }
-//            if let zip = placemark.postalCode { print(zip) }
-        } )
-        return
-    }
-}
-
-
-
-extension UIStackView {
-    func addViews(_ views: [UIView?]) {
-        views.forEach {
-            guard let view = $0 else { return }
-            self.addArrangedSubview(view)
+    func startLocationManager() {
+        locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+            locationManager.pausesLocationUpdatesAutomatically = false
+            locationManager.startUpdatingLocation()
         }
     }
 }
- 
+
+extension SecondViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        if let lastLocation = locations.last {
+            
+            let location = CLLocation(latitude: lastLocation.coordinate.latitude, longitude: lastLocation.coordinate.longitude)
+            let geoCoder = CLGeocoder()
+            geoCoder.reverseGeocodeLocation(location, completionHandler: { placemarks, error -> Void in
+                guard let placemark = placemarks?.first else { return }
+    //            if let subThoughtfare = placemark.subThoroughfare { print(subThoughtfare) }
+//                if let thoroughfare = placemark.thoroughfare { print(thoroughfare) }
+                if let city = placemark.locality { print(city) }
+                if let country = placemark.country { print(country) }
+    //            if let zip = placemark.postalCode { print(zip) }
+                self.locationLabel.text = String(placemark.country ?? "") + ", " + String(placemark.locality ?? "")
+            } )
+            return
+        }
+    }
+}
