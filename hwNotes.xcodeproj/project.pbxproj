@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		92D0B5B929A29836009CFF6D /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D0B5B829A29836009CFF6D /* Location.swift */; };
 		92FE28B429976DC8003BC929 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92FE28B329976DC8003BC929 /* AppDelegate.swift */; };
 		92FE28B629976DC8003BC929 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92FE28B529976DC8003BC929 /* SceneDelegate.swift */; };
 		92FE28B829976DC8003BC929 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92FE28B729976DC8003BC929 /* ViewController.swift */; };
@@ -20,7 +19,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		92D0B5B829A29836009CFF6D /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		92FE28B029976DC8003BC929 /* hwNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hwNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92FE28B329976DC8003BC929 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		92FE28B529976DC8003BC929 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -68,7 +66,6 @@
 				92FE28B529976DC8003BC929 /* SceneDelegate.swift */,
 				92FE28B729976DC8003BC929 /* ViewController.swift */,
 				92FE2946299AD321003BC929 /* SecondViewController.swift */,
-				92D0B5B829A29836009CFF6D /* Location.swift */,
 				92FE28C92997983A003BC929 /* MapViewController.swift */,
 				92FE2A2829A10944003BC929 /* LocationManager.swift */,
 				92FE28B929976DC8003BC929 /* Main.storyboard */,
@@ -151,7 +148,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				92FE28CA2997983A003BC929 /* MapViewController.swift in Sources */,
-				92D0B5B929A29836009CFF6D /* Location.swift in Sources */,
 				92FE2A2929A10944003BC929 /* LocationManager.swift in Sources */,
 				92FE28B829976DC8003BC929 /* ViewController.swift in Sources */,
 				92FE28B429976DC8003BC929 /* AppDelegate.swift in Sources */,

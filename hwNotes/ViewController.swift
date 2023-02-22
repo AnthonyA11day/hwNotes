@@ -7,32 +7,29 @@
 
 import UIKit
 
-class ViewController: UIViewController, Delegate {
-    
-    // для передачи через closure
-    var closure1: ( (String) -> () )?
-    var tuple: (String,String) = ("","")
-    var celectedOneCell: Int?
+class ViewController: UIViewController, addNewCellDelegate {
     
     var tableView = UITableView()
-    var notesArray = [("data+локация А","заметка 1"), ("data+локация Б","заметка 2"), ("data+локация С","заметка 3")]
+    var notesArray = [("Дата,вермя - Локация","Образец заметки")]
+    var celectedOneCell: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubview()
     }
     
+    func setupSubview() {
+        title = "Notes"
+        view.backgroundColor = .systemGray4
+        navigationController?.navigationBar.prefersLargeTitles = true
+        addBarButtonsFirstVC()
+        setupTableView()
+    }
+    
     // pass data from VC2 to VC1 via Delegate
     func addNewCell(dateAndLocation: String, text: String) {
         notesArray.append( (dateAndLocation, text) )
         tableView.reloadData()
-    }
-    
-    func setupSubview() {
-        title = "Notes"
-        view.backgroundColor = .systemGray4
-        addBarButtonsFirstVC()
-        setupTableView()
     }
 }
 
@@ -48,7 +45,6 @@ extension ViewController {
     }
     
     @objc func actionLeftBarButton() {
-//        print("action left addBarButtonsFirstVC")
         let secondViewController = SecondViewController()
         navigationController?.pushViewController(secondViewController, animated: true)
         secondViewController.delegate = self
@@ -58,15 +54,6 @@ extension ViewController {
         if let item = self.celectedOneCell {
             secondViewController.passText = notesArray[item].1
         }
-
-        // pass from VC2 to VC1
-        secondViewController.closure = { [weak self] text in
-            self?.title = text
-            
-//            tableView.delegate.cellForRow(at: IndexPath)
-//            tableView.reloadData()
-        }
-
     }
     
     @objc func actionRightBarButton() {
@@ -96,7 +83,6 @@ extension ViewController {
         }
 }
 
-
 //MARK: - tableView
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -106,8 +92,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-//        tableView.register(CustomCell.self, forCellReuseIdentifier: identifire)
-//        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -135,11 +119,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.textColor = .red
         cell.detailTextLabel?.text = notesArray[indexPath.row].1
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 14)
-        
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifire, for: indexPath) as? CustomCell
-//            else { fatalError() }
-//        cell.configere(content: content[indexPath.row])
-
         return cell
     }
     
@@ -166,29 +145,4 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         celectedOneCell = Int(indexPath.row)
         print(indexPath.row)
     }
-
 }
-
-
-    //cell insert
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .insert {
-//            let tuple = ("add tuple", "text")
-//            notesArray.append(tuple)
-//            tableView.insertRows(at: [indexPath], with: .right)
-//        }
-//    }
-    
-//    //cell move
-//    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-//        true
-//    }
-//
-//    //cell moveing
-//    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-//
-//        let item = notesArray[sourceIndexPath.row]
-//        notesArray.remove(at: sourceIndexPath.row)
-//        notesArray.insert(item, at: destinationIndexPath.row)
-//    }
-//}

@@ -9,24 +9,19 @@ import UIKit
 import MapKit
 import CoreLocation
 
-protocol Delegate {
+protocol addNewCellDelegate {
     func addNewCell(dateAndLocation: String, text: String)
 }
 
 final class SecondViewController: UIViewController {
-    
-    // for location
-    let locationManager = CLLocationManager()
-    var lat: Double = 40.43065
-    var lon: Double = -79.92317
-    
-    //for data pass via Closure
-    var closure: ( (String) -> () )?
+        
+    //for data pass
     var passText = ""
     
     //for data passs via Delegate
-    var delegate: Delegate?
+    var delegate: addNewCellDelegate?
     
+    let locationManager = CLLocationManager()
     
     let sender: UIDatePicker = {
         let sender = UIDatePicker()
@@ -36,8 +31,6 @@ final class SecondViewController: UIViewController {
     
     let formatter: DateFormatter = {
         let formatter = DateFormatter()
-//        formatter.locale = .current
-//        formatter.timeZone = .autoupdatingCurrent
         formatter.dateFormat = "yyyy.MM.dd, HH:mm"
         return formatter
     }()
@@ -45,7 +38,6 @@ final class SecondViewController: UIViewController {
     var dateLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 200, width: 300, height: 50))
         label.text = "Date and Time"
-//        label.backgroundColor = .systemPink
         label.backgroundColor = .systemGray2
         label.textAlignment = .center
         return label
@@ -54,7 +46,6 @@ final class SecondViewController: UIViewController {
     var locationLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 250, width: 300, height: 50))
         label.text = "Country, City"
-//        label.backgroundColor = .orange
         label.backgroundColor = .systemGray2
         label.textAlignment = .center
         return label
@@ -76,7 +67,7 @@ final class SecondViewController: UIViewController {
     }
     
     func setupSubview() {
-        title = "Add New Note"
+        title = "Add new note"
         view.backgroundColor = .systemGray4
         addBarButtonsSecondVC()
         
@@ -110,26 +101,22 @@ final class SecondViewController: UIViewController {
         print("action right addBarButtonsFirstVC")
         navigationController?.popViewController(animated: true)
         
-        if noteTextView.text == "" {
+        if noteTextView.text == "" || noteTextView.text == passText {
             print("not saved, not pass")
         } else {
             print("saved and pass")
             
             // pass data from VC2 to VC1 via Delegate
             delegate?.addNewCell(dateAndLocation: String(dateLabel.text ?? "nil") + " - " + String(locationLabel.text ?? ""),
-                                text: String(noteTextView.text ?? "nil") )
-            
-            // pass data from VC2 to VC1 via Closure
-            closure?(noteTextView.text)
+                                 text: String(noteTextView.text ?? "nil") )
         }
     }
     
     @objc func actionRightBarButton() {
         print("action left addBarButtonsFirstVC")
-//        navigationController?.pushViewController(MapViewController(), animated: true)
+        navigationController?.pushViewController(MapViewController(), animated: true)
     }
 }
-
 
 extension SecondViewController {
     func startLocationManager() {
@@ -153,11 +140,8 @@ extension SecondViewController: CLLocationManagerDelegate {
             let geoCoder = CLGeocoder()
             geoCoder.reverseGeocodeLocation(location, completionHandler: { placemarks, error -> Void in
                 guard let placemark = placemarks?.first else { return }
-    //            if let subThoughtfare = placemark.subThoroughfare { print(subThoughtfare) }
-//                if let thoroughfare = placemark.thoroughfare { print(thoroughfare) }
                 if let city = placemark.locality { print(city) }
                 if let country = placemark.country { print(country) }
-    //            if let zip = placemark.postalCode { print(zip) }
                 self.locationLabel.text = String(placemark.country ?? "") + ", " + String(placemark.locality ?? "")
             } )
             return
