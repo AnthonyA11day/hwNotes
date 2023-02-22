@@ -9,6 +9,10 @@ import UIKit
 import MapKit
 import CoreLocation
 
+protocol Delegate {
+    func addNewCell(dateAndLocation: String, text: String)
+}
+
 final class SecondViewController: UIViewController {
     
     // for location
@@ -16,9 +20,13 @@ final class SecondViewController: UIViewController {
     var lat: Double = 40.43065
     var lon: Double = -79.92317
     
-    //for dta pass
+    //for data pass via Closure
     var closure: ( (String) -> () )?
     var passText = ""
+    
+    //for data passs via Delegate
+    var delegate: Delegate?
+    
     
     let sender: UIDatePicker = {
         let sender = UIDatePicker()
@@ -30,14 +38,15 @@ final class SecondViewController: UIViewController {
         let formatter = DateFormatter()
 //        formatter.locale = .current
 //        formatter.timeZone = .autoupdatingCurrent
-        formatter.dateFormat = "d MMM yyyy, h:mm:ss a"
+        formatter.dateFormat = "yyyy.MM.dd, HH:mm"
         return formatter
     }()
     
     var dateLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 200, width: 300, height: 50))
         label.text = "Date and Time"
-        label.backgroundColor = .systemPink
+//        label.backgroundColor = .systemPink
+        label.backgroundColor = .systemGray2
         label.textAlignment = .center
         return label
     }()
@@ -45,7 +54,8 @@ final class SecondViewController: UIViewController {
     var locationLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 250, width: 300, height: 50))
         label.text = "Country, City"
-        label.backgroundColor = .orange
+//        label.backgroundColor = .orange
+        label.backgroundColor = .systemGray2
         label.textAlignment = .center
         return label
     }()
@@ -105,7 +115,11 @@ final class SecondViewController: UIViewController {
         } else {
             print("saved and pass")
             
-            // pass data from VC2 to VC1
+            // pass data from VC2 to VC1 via Delegate
+            delegate?.addNewCell(dateAndLocation: String(dateLabel.text ?? "nil") + " - " + String(locationLabel.text ?? ""),
+                                text: String(noteTextView.text ?? "nil") )
+            
+            // pass data from VC2 to VC1 via Closure
             closure?(noteTextView.text)
         }
     }

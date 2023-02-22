@@ -7,20 +7,25 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, Delegate {
     
     // для передачи через closure
     var closure1: ( (String) -> () )?
-    var tuple: (String,String)? = nil
+    var tuple: (String,String) = ("","")
     var celectedOneCell: Int?
     
     var tableView = UITableView()
-    var notesArray = [("data+локация А","заметка 1"), ("data+локация Б","заметка 2"), ("data+локация С","заметка 3"),
-                      ("data+локация D","заметка 4"), ("data+локация E","заметка 5"), ("data+локация F","заметка 6")]
+    var notesArray = [("data+локация А","заметка 1"), ("data+локация Б","заметка 2"), ("data+локация С","заметка 3")]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubview()
+    }
+    
+    // pass data from VC2 to VC1 via Delegate
+    func addNewCell(dateAndLocation: String, text: String) {
+        notesArray.append( (dateAndLocation, text) )
+        tableView.reloadData()
     }
     
     func setupSubview() {
@@ -28,11 +33,6 @@ class ViewController: UIViewController {
         view.backgroundColor = .systemGray4
         addBarButtonsFirstVC()
         setupTableView()
-        addNewCell()
-    }
-    
-    func addNewCell() {
-        
     }
 }
 
@@ -51,8 +51,10 @@ extension ViewController {
 //        print("action left addBarButtonsFirstVC")
         let secondViewController = SecondViewController()
         navigationController?.pushViewController(secondViewController, animated: true)
+        secondViewController.delegate = self
         
         // pass detailText from cell VC1 to textView VC2
+        guard !notesArray.isEmpty else { return }
         if let item = self.celectedOneCell {
             secondViewController.passText = notesArray[item].1
         }
